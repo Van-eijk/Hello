@@ -1,0 +1,83 @@
+body{
+    background-color: rgb(163, 130, 194);
+}
+
+.container{
+    height: 100vh;
+}
+.box-title{
+    background-color: blueviolet;
+    color: white;
+    height: 45px;
+    text-align: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.box-login{
+    /*border: 2px solid black;*/
+    border-radius: 10px;
+    background-color: white;
+}
+
+.info p{
+    text-align: center;
+    visibility: hidden;
+}
+
+.box-form{
+    /*border: 2px solid red;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.pseudo, .password{
+    display: flex;
+    align-items: center;
+    border: 2px solid blueviolet;
+    margin: 10px;
+    width: 300px;
+}
+
+.icon-password, .icon-pseudo{
+    width: 60px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: blueviolet;
+    /*border: 2px solid black;*/
+}
+input{
+    height: 50px;
+    width: 100%;
+    margin: 0px 0px;
+    padding: 5px 5px;
+    border: none;
+}
+
+.send{
+    background-color: blueviolet;
+    color: white;
+    display: inline-block;
+    width: 300px;
+}
+
+span i{
+    color: white;
+    font-size: 25px;
+}
+
+.box-footer{
+    margin-top: 30px;
+    padding: 0px 10px;
+}
