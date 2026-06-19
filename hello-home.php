@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/hello-home-style.css">
+    <link rel="stylesheet" href="css/header.css">
 </head>
 <body>
     <div class="container">

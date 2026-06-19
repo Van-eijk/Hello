@@ -1,0 +1,48 @@
+
+
+.main-content{
+    margin-top: 80px;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+
+.item-membre{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px 0px 5px 0px;
+    
+}
+
+.info-membre{
+    display: flex;
+    align-items: center;
+}
+.info-membre span{
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.info-membre p{
+    margin: 0px;
+    padding: 0px;
+    font-weight: bolder;
+}
+.info-membre i{
+    font-size: 30px;
+    color: blueviolet;
+}
+.status{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.online{
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    background-color: greenyellow;
+    margin-right: 10px;
+}
