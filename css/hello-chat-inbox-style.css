@@ -95,6 +95,47 @@ nav{
     overflow-y: scroll;
 }
 
+.box-message-left{
+    /*border: 2px solid green;*/
+    display: flex;
+    align-items: center;
+    margin: 10px 10px;
+    /*max-width: 50%;*/
+
+
+}
+.main-message-left{
+    border: 2px solid black;
+    max-width: 50%;
+    background-color: aqua;
+
+    border-top-left-radius: 0px;
+    border-top-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    padding: 5px;
+}
+.box-message-right{
+    /*border: 2px solid red;*/
+    display: flex;
+    /*flex-direction: row-reverse;*/
+    justify-content: flex-end;
+    align-items: center;
+    margin: 10px 10px;
+    /*max-width: 50%;*/
+
+}
+
+.main-message-right{
+    border: 2px solid blue;
+    background-color: beige;
+    max-width: 50%;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    padding: 5px;
+}
 .send-message form{
     display: flex;
     align-items: center;

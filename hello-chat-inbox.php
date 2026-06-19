@@ -65,6 +65,19 @@
 
 
             <div class="main-chat w-100 h-100">
+                <div class="box-message-left">
+                    <div class="main-message-left">
+                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusamus, deserunt. Cumque nesciunt, sit ratione, vero eum numquam dignissimos non, maxime aspernatur vitae eos. At quam enim earum placeat nam quasi!</p>
+                        <p>12h00</p>
+                    </div>
+                </div>
+
+                <div class="box-message-right">
+                    <div class="main-message-right">
+                        <p>Lorem ipsum dolor sit amet consectetur, .</p>
+                        <p>13h00</p>
+                    </div>
+                </div>
 
             </div>
             <div class="send-message">
