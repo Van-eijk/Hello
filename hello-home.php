@@ -19,7 +19,7 @@
 
         <div class="main-content">
 
-            <a href="#">
+            <a href="hello-chat-inbox.php">
                 <div class="item-message">
                     <div class="icon-message">
                         <span>
@@ -48,38 +48,7 @@
 
 
 
-            <a href="#">
-                <div class="item-message">
-                    <div class="icon-message">
-                        <span>
-                            <i class="bi bi-person-circle"></i>
-                        </span>
-
-                    </div>
-                    <div class="main-message border-bottom">
-                        <div class="sender-message">
-                            <p>Bobo</p>
-
-                        </div>
-                        <div class="message-text">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate officia placeat rerum deleniti accusamus voluptatibus vero ad, ducimus nesciunt vitae eaque praesentium ut quo mollitia, voluptatum explicabo temporibus in minima.</p>
-                        </div>
-
-                    </div>
-                    <div class="hour-message">
-                        <p>13:00</p>
-                        <div class="new-message">
-                            <span>1</span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-
-
-
-
-
-            <a href="#">
+            <a href="hello-chat-inbox.php">
                 <div class="item-message">
                     <div class="icon-message">
                         <span>
@@ -110,7 +79,38 @@
 
 
 
-            <a href="#">
+            <a href="hello-chat-inbox.php">
+                <div class="item-message">
+                    <div class="icon-message">
+                        <span>
+                            <i class="bi bi-person-circle"></i>
+                        </span>
+
+                    </div>
+                    <div class="main-message border-bottom">
+                        <div class="sender-message">
+                            <p>Bobo</p>
+
+                        </div>
+                        <div class="message-text">
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate officia placeat rerum deleniti accusamus voluptatibus vero ad, ducimus nesciunt vitae eaque praesentium ut quo mollitia, voluptatum explicabo temporibus in minima.</p>
+                        </div>
+
+                    </div>
+                    <div class="hour-message">
+                        <p>13:00</p>
+                        <div class="new-message">
+                            <span>1</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+
+
+
+
+            <a href="hello-chat-inbox.php">
                 <div class="item-message">
                     <div class="icon-message">
                         <span>
