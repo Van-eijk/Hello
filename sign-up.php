@@ -18,17 +18,17 @@
             <div class="box-title">
                 <h2>SIGN UP</h2>
             </div>
-            <div class="info">
+            <div class="info" id="info">
                 <p>Mot de passe incorrect</p>
             </div>
             <div class="box-form">
-               <form action="" method="post">
+               <form action="" id="form-inscription" method="post">
                     <div class="pseudo">
                         <div class="icon-pseudo">
                             <span><i class="bi bi-person-fill"></i></span>
 
                         </div>
-                        <input type="text" class="" placeholder="Pseudo" >               
+                        <input type="text" class="" placeholder="Pseudo" id="pseudo" require>               
                     </div>
 
                     <div class="pseudo">
@@ -36,7 +36,7 @@
                             <span><i class="bi bi-envelope-fill"></i></span>
 
                         </div>
-                        <input type="email" class="" id="emial" placeholder="Email" >               
+                        <input type="email" class="" id="email" placeholder="Email" require>               
                     </div>
 
                     <div class="password">
@@ -44,7 +44,7 @@
                             <span><i class="bi bi-lock-fill"></i></span>
 
                         </div>
-                        <input type="password" class="" placeholder="Password" >
+                        <input type="password" class="" placeholder="Password" id="password" require>
                     </div>
 
                     <div class="password">
@@ -52,9 +52,9 @@
                             <span><i class="bi bi-lock-fill"></i></span>
 
                         </div>
-                        <input type="password" class="" id="confirmpassword" placeholder=" Confirm password" >
+                        <input type="password" class="" id="confirmpassword" placeholder=" Confirm password" id="confirmpassword" require>
                     </div>
-                    <input type="submit" class="send" value="SIGN UP">
+                    <input type="submit" class="send" value="SIGN UP" id="send" >
                </form>
 
             </div>
@@ -75,5 +75,67 @@
     </script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+    <script>
+        jQuery(function($){
+
+           //alert("bobo");
+
+            $('#form-inscription').submit(function(e){
+                e.preventDefault(); // On empêche le rechargement de la page
+                let pseudo = $('#pseudo').val().trim();
+                let email = $('#email').val().trim();
+                let password = $('#password').val();
+                let confirmpassword = $('#confirmpassword').val();
+
+                if(password === confirmpassword){
+                    $('#info').css('visibility', 'hidden');
+
+                    // On lance l'inscription à travers ajax
+
+                    $.ajax({
+                        url: 'signup-data.php',
+                        type: 'POST',
+                        dataType: 'json',
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        data: {
+                            pseudoAjax: pseudo, 
+                            emailAjax: email,
+                            passwordAjax : password
+
+                        },
+                        success : function(response){
+                                // message envoyé avec succès
+                                //alert(resultat);
+                                if(response.status === "success"){
+                                    alert(response.message);
+                                    $(location).attr('href','index.php');
+                                }else{
+                                    alert(response.message);
+                                }
+                            
+                        
+                        },
+                        error: function(xhr) {
+                                    console.log(xhr.responseText); // 🔥 debug réel
+                                    alert("Erreur lors de l'envoi du message");
+                                }
+                
+                    });
+                    
+                }
+                else{
+                    $('#info').css('visibility', 'bloc');
+                    $('#info').css('text-align', 'center');
+                    $('#info').text('Les mots de passe sont différents !');
+                    
+                }
+
+
+               
+            });
+
+        });
+    </script>
 </body>
 </html>

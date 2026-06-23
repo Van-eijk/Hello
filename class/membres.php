@@ -14,6 +14,16 @@
 
          // METHODES
 
+
+        public function deconnexionMembre($lien){
+             session_start();
+            $_SESSION = array();
+            $_SESSION = array();
+            session_destroy();
+            header($lien);
+
+        }
+
         public function inscriptionMembre($pseudoMembre, $emailMembre, $motDePasseMembre, $lienFichierBDD){
             //setPseudo($pseudo);
             include $lienFichierBDD ;
@@ -21,7 +31,7 @@
             $mdpHash = password_hash($motDePasseMembre, PASSWORD_DEFAULT) ; // hachage du mot de passe
             $statut = "en ligne";
             
-            $reqMembre = $connexionDataBase -> prepare('INSERT INTO membres(pseudoMembre,emailMembre,motDePasseMembre,statut) VALUES (:pseudo, :email, :motdepasse, statut)');
+            $reqMembre = $connexionDataBase -> prepare('INSERT INTO membres(pseudoMembre,emailMembre,motDePasseMembre,statut) VALUES (:pseudo, :email, :motdepasse, :statut)');
             $reqMembre ->execute(array(
                 'pseudo' => $pseudoMembre,
                 'email' => $emailMembre,
@@ -29,6 +39,15 @@
                 'statut' => $statut
 
             ));
+
+            if($reqMembre->rowCount() >= 1){
+                return true ;
+       
+            }
+            else{
+                return false ;
+               
+            }
 
         }
 
