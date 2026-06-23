@@ -12,11 +12,11 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav ">
                 <li class="nav-item ps-3">
-                    <a href="accueil.php" class="nav-link text-white active">Accueil</a>
+                    <a href="hello-home.php" class="nav-link text-white active">Inbox</a>
                 </li>
 
                 <li class="nav-item ps-3">
-                    <a href="ajouterclient.php" class="nav-link text-white">Groupes</a>
+                    <a href="hello-groupe.php" class="nav-link text-white">Groupes</a>
                 </li>
 
                 <li class="nav-item ps-3">

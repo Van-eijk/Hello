@@ -1,0 +1,16 @@
+.main-content{
+    margin-top: 80px;
+    height: 90vh;
+    border: 1px solid black;
+    position: relative;
+}
+
+.add-members{
+    border: 1px solid black;
+}
+
+.list-members{
+    border: 1px solid blue;
+    overflow-y: scroll;
+    height: 500px;
+}
