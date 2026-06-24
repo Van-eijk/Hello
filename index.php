@@ -86,7 +86,10 @@
                             // message envoyé avec succès
                             //alert(resultat);
                             if(response.status === "success"){
-                                alert(response.message);
+                                //alert(response.message);
+
+                                $(location).attr('href','hello-home.php'); // On redirige l'utilisateur vers la page d'accueil
+
                                 //$('#info').css('visibility','bloc');
                                 //$('#info').text('Pseudo ou mot de passe incorrect');
 

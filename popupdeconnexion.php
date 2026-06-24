@@ -11,7 +11,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NON</button>
-            <a type="button" href="deconnexionmembre.php" class="btn btn-primary">OUI</a>
+            <a type="button" href="sign-out.php" class="btn btn-primary">OUI</a>
         </div>
         </div>
     </div>

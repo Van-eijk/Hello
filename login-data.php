@@ -3,7 +3,7 @@
     include 'class/uploadclass.php';
     include 'database/configdatabase.php';
     $lienFichierBDD = "database/configdatabase.php";
-    $lienPageAccueil = "hello-home.php" ;
+   
 
     if(isset($_POST["pseudoAjax"])){
         
@@ -15,7 +15,7 @@
 
             
 
-            $connexion = $membre->connexionMembre($pseudoMembre, $motDePasseMembre, $lienFichierBDD, $lienPageAccueil);
+            $connexion = $membre->connexionMembre($pseudoMembre, $motDePasseMembre, $lienFichierBDD);
 
             if($connexion === false){
 

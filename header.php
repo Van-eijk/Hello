@@ -26,7 +26,7 @@
                 
 
                 <li class="nav-item ps-3">
-                    <a href="profilmembre.php" class="nav-link text-white"> User</a>
+                    <a href="#" class="nav-link text-white"> <?php if(isset($_SESSION['pseudoMembre'])){echo $_SESSION['pseudoMembre'];}else{echo "User";} ?></a>
                 </li>
 
                 <li class="nav-item ps-3">
