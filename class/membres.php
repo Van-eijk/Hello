@@ -15,21 +15,42 @@
          // METHODES
 
 
-        public function deconnexionMembre(){
-             session_start();
-            $_SESSION = array();
-            $_SESSION = array();
-            session_destroy();
+        public function deconnexionMembre($idMembre, $lienFichierBDD){
+            // On change d'abord le statut de l'utilisateur dans la base de données avant la déconnexion
+
+
+            include $lienFichierBDD ;
+
+            $statut = "hors ligne";
+            
+            $reqMembre = $connexionDataBase -> prepare('UPDATE membres SET statut = :statut WHERE idMembre = :idMembre');
+            $reqMembre ->execute(array(
+                'statut' => $statut,
+                'idMembre' => $idMembre
+            ));
+
+            if($reqMembre->rowCount() >= 1){
+                //return true ;
+
+                session_start();
+
+                $_SESSION = array();
+                $_SESSION = array();
+                session_destroy();
+       
+            }
+            
+
+            
             
 
         }
 
         public function inscriptionMembre($pseudoMembre, $emailMembre, $motDePasseMembre, $lienFichierBDD){
-            //setPseudo($pseudo);
             include $lienFichierBDD ;
 
             $mdpHash = password_hash($motDePasseMembre, PASSWORD_DEFAULT) ; // hachage du mot de passe
-            $statut = "en ligne";
+            $statut = "hors ligne";
             
             $reqMembre = $connexionDataBase -> prepare('INSERT INTO membres(pseudoMembre,emailMembre,motDePasseMembre,statut) VALUES (:pseudo, :email, :motdepasse, :statut)');
             $reqMembre ->execute(array(
@@ -68,15 +89,32 @@
             }
             else{
                 if(password_verify($motDePasseMembre, $resultatConnexionAdmin['motDePasseMembre'])){
+
+                    // On cree les variables de session
                     session_start();
                     $_SESSION['emailMembre'] = $resultatConnexionAdmin['emailMembre'];
                     $_SESSION['idMembre'] = $resultatConnexionAdmin['idMembre'];
                     $_SESSION['pseudoMembre'] = $resultatConnexionAdmin['pseudoMembre'];
 
-                   
 
-                    return true ;
-                }else{
+                    // On modifie le statut de l'utilisateur en base de données
+
+
+                    $statut = "en ligne";
+            
+                    $reqMembre = $connexionDataBase -> prepare('UPDATE membres SET statut = :statut WHERE pseudoMembre = :pseudoMembre');
+                    $reqMembre ->execute(array(
+                        'statut' => $statut,
+                        'pseudoMembre' => $pseudoMembre
+                    ));
+
+                    if($reqMembre->rowCount() >= 1){
+                        return true ;
+            
+                    }
+
+                }
+                else{
                     return false;
                 }
 
