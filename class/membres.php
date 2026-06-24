@@ -23,9 +23,12 @@
 
             $statut = "hors ligne";
             
-            $reqMembre = $connexionDataBase -> prepare('UPDATE membres SET statut = :statut WHERE idMembre = :idMembre');
+            $date = date("Y-m-d H:i:s") ;
+            
+            $reqMembre = $connexionDataBase -> prepare('UPDATE membres SET statut = :statut, derniereConnexion = :derniereC WHERE idMembre = :idMembre');
             $reqMembre ->execute(array(
                 'statut' => $statut,
+                'derniereC' => $date,
                 'idMembre' => $idMembre
             ));
 
@@ -101,10 +104,12 @@
 
 
                     $statut = "en ligne";
+                    
             
                     $reqMembre = $connexionDataBase -> prepare('UPDATE membres SET statut = :statut WHERE pseudoMembre = :pseudoMembre');
                     $reqMembre ->execute(array(
                         'statut' => $statut,
+                        
                         'pseudoMembre' => $pseudoMembre
                     ));
 
