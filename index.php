@@ -18,17 +18,17 @@
             <div class="box-title">
                 <h2>Login</h2>
             </div>
-            <div class="info">
-                <p>Mot de passe incorrect</p>
+            <div class="info" >
+                <p id="info">Mot de passe incorrect</p>
             </div>
             <div class="box-form">
-               <form action="" method="post">
+               <form action="" method="post" id="formulaireLogin">
                     <div class="pseudo">
                         <div class="icon-pseudo">
                             <span><i class="bi bi-person-fill"></i></span>
 
                         </div>
-                        <input type="text" class="" placeholder="Username" >               
+                        <input type="text" class="" placeholder="Username" id="pseudoLogin" >               
                     </div>
 
                     <div class="password">
@@ -36,7 +36,7 @@
                             <span><i class="bi bi-lock-fill"></i></span>
 
                         </div>
-                        <input type="password" class="" placeholder="password" >
+                        <input type="password" class="" placeholder="password" id="passwordLogin" >
                     </div>
                     <p><a href="#">Forgot password ?</a></p>
                     <input type="submit" class="send" value="LOGIN">
@@ -60,5 +60,53 @@
     </script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+    <script>
+        jQuery(function($){
+            $('#formulaireLogin').submit(function(e){
+                e.preventDefault();
+                //alert("bb");
+
+                let pseudoLogin = $('#pseudoLogin').val().trim() ;
+                let passwordLogin = $('#passwordLogin').val() ;
+                //alert(passwordLogin);
+
+
+                $.ajax({
+                    url: 'login-data.php',
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    data: {
+                        pseudoAjax: pseudoLogin, 
+                        passwordAjax : passwordLogin
+
+                    },
+                    success : function(response){
+                            // message envoyé avec succès
+                            //alert(resultat);
+                            if(response.status === "success"){
+                                alert(response.message);
+                                //$('#info').css('visibility','bloc');
+                                //$('#info').text('Pseudo ou mot de passe incorrect');
+
+                            }else{
+                                alert(response.message);
+                            }
+                        
+                    
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText); // 🔥 debug réel
+                        alert("Erreur avec la communication avec la BD");
+                    }
+                
+                });
+
+
+            })
+        });
+
+    </script>
 </body>
 </html>

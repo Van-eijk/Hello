@@ -57,7 +57,7 @@
 
             $reqConnexionAdmin = $connexionDataBase->prepare("SELECT * FROM membres WHERE pseudoMembre = :pseudo") ;
             $reqConnexionAdmin->execute(array(
-                    'emailAdmin'=>$emailAdmin
+                'pseudo'=>$pseudoMembre
             )) ;
 
             $resultatConnexionAdmin = $reqConnexionAdmin->fetch();
@@ -76,7 +76,8 @@
                    
                     //echo $resultatConnexionAdmin['nomAdmin'] ;
 
-                    header("Location:$lienPageAccueil");
+                    //header("Location:$lienPageAccueil");
+                    return true ;
                 }else{
                     return false;
                 }

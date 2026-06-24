@@ -109,7 +109,7 @@
                                 //alert(resultat);
                                 if(response.status === "success"){
                                     alert(response.message);
-                                    $(location).attr('href','index.php');
+                                    $(location).attr('href','index.php'); // On redirige l'utilisateur vers la page de connexion
                                 }else{
                                     alert(response.message);
                                 }
