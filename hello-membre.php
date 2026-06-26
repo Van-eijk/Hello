@@ -1,5 +1,8 @@
 <?php
     session_start();
+    include 'class/uploadclass.php';
+    include 'database/configdatabase.php';
+    $lienFichierBDD = "database/configdatabase.php";
 ?>
 
 <?php
@@ -31,50 +34,14 @@
                 <?php include "header.php" ; ?>
                 <?php include 'popupdeconnexion.php'; //Confirmation de déconnexion de l'utilisateur ?>
 
-                <div class="main-content">
-                    <a href="hello-chat-inbox.php">
-                        <div class="item-membre border">
-                            <div class="info-membre">
-                                <span><i class="bi bi-person-circle"></i></span>
-                                <p>Bobo</p>
-                            </div>
-                            <div class="status">
-                                <div class="online">
-
-                                </div>
-                            </div>
-                        </div>
-                    </a>
+                <div class="main-content" id="member-content" >
+                   
+                   
 
 
-                    <a href="hello-chat-inbox.php">
-                        <div class="item-membre border">
-                            <div class="info-membre">
-                                <span><i class="bi bi-person-circle"></i></span>
-                                <p>Bobo</p>
-                            </div>
-                            <div class="status">
-                                <div class="online">
-
-                                </div>
-                            </div>
-                        </div>
-                    </a>
 
 
-                    <a href="hello-chat-inbox.php">
-                        <div class="item-membre border">
-                            <div class="info-membre">
-                                <span><i class="bi bi-person-circle"></i></span>
-                                <p>Promo</p>
-                            </div>
-                            <div class="status">
-                                <div class="online">
-
-                                </div>
-                            </div>
-                        </div>
-                    </a>
+                    
 
                 </div>
 
@@ -85,6 +52,83 @@
             </script>
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+            <script>
+                function loadMessage(){
+                    $.ajax({
+                        url: 'load-members.php',
+                        type: 'GET',
+                        dataType: 'json',
+                        success : function(response, statut){
+
+                            if(response.status === "success"){
+                                //$('#member-content').empty();
+
+                                //$('#member-content').append(response.listeDesMembres);
+
+                                
+
+                                response.listeDesMembres.forEach(function(itemMembre) {
+                                    if(itemMembre.statut == "en ligne"){
+                                            $("#member-content").append(`
+                                            <a href='hello-chat-inbox.php'>
+                                                <div class='item-membre border'>
+                                                    <div class='info-membre'>
+                                                        <span>
+                                                            <i class='bi bi-person-circle'></i>
+                                                        </span>
+                                                        <p>${itemMembre.pseudoMembre}</p>
+                                                    </div>
+                                                    <div class='status'>
+                                                        <div class='online'></div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        `);
+
+                                    }else{
+
+                                     $("#member-content").append(`
+                                            <a href='hello-chat-inbox.php'>
+                                                <div class='item-membre border'>
+                                                    <div class='info-membre'>
+                                                        <span>
+                                                            <i class='bi bi-person-circle'></i>
+                                                        </span>
+                                                        <p>${itemMembre.pseudoMembre}</p>
+                                                    </div>
+                                                    <div class='status'>
+                                                        <div class='online d-none'></div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        `);
+
+                                    }
+                                    
+                                });
+
+                                
+
+                            }
+
+
+
+                            
+                        },
+                        error : function(resultat, statut, erreur){
+                            alert("erreur lors du chargement des membres")
+                        },
+                        complete : function(resultat, statut){
+                            //alert("requette terminée");
+
+                        }
+                    
+                    });
+                }
+
+                loadMessage();
+            </script>
         </body>
         </html>
 
@@ -92,9 +136,9 @@
 
 <?php
     }
-        else{
-            header("Location:index.php");
+    else{
+        header("Location:index.php");
 
-        }
+    }
 
 ?>

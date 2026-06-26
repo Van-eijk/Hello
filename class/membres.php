@@ -15,6 +15,25 @@
          // METHODES
 
 
+        public function afficherListeMembre($lienFichierBDD){
+            include $lienFichierBDD ;
+            $reqListeMembre = $connexionDataBase->prepare("SELECT * FROM membres ORDER BY pseudoMembre") ;
+            $reqListeMembre->execute() ;
+
+            if($reqListeMembre ->rowCount() >= 1){
+            
+                    $resultatAfficherMembre = $reqListeMembre->fetchAll(PDO::FETCH_ASSOC) ;
+                    return $resultatAfficherMembre ;
+                    
+            }
+            else{
+                    return false ;
+            }
+
+
+        }
+
+
         public function deconnexionMembre($idMembre, $lienFichierBDD){
             // On change d'abord le statut de l'utilisateur dans la base de données avant la déconnexion
 
@@ -23,7 +42,7 @@
 
             $statut = "hors ligne";
             
-            $date = date("Y-m-d H:i:s") ;
+            $date = date("Y-m-d H:i:s") ; // format de date de mysql
             
             $reqMembre = $connexionDataBase -> prepare('UPDATE membres SET statut = :statut, derniereConnexion = :derniereC WHERE idMembre = :idMembre');
             $reqMembre ->execute(array(
