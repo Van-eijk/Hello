@@ -54,7 +54,8 @@
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
             <script>
-                function loadMessage(){
+                jQuery(function($){
+                    function loadMessage(){
                     $.ajax({
                         url: 'load-members.php',
                         type: 'GET',
@@ -71,7 +72,7 @@
                                 response.listeDesMembres.forEach(function(itemMembre) {
                                     if(itemMembre.statut == "en ligne"){
                                             $("#member-content").append(`
-                                            <a href='hello-chat-inbox.php'>
+                                            <a href='hello-chat-inbox.php?id=${itemMembre.idMembre}'>
                                                 <div class='item-membre border'>
                                                     <div class='info-membre'>
                                                         <span>
@@ -89,7 +90,7 @@
                                     }else{
 
                                      $("#member-content").append(`
-                                            <a href='hello-chat-inbox.php'>
+                                            <a href='hello-chat-inbox.php?id=${itemMembre.idMembre}'>
                                                 <div class='item-membre border'>
                                                     <div class='info-membre'>
                                                         <span>
@@ -128,6 +129,8 @@
                 }
 
                 loadMessage();
+
+                });
             </script>
         </body>
         </html>

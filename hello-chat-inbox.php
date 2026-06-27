@@ -5,7 +5,12 @@
 <?php
    
 
-    if(isset($_SESSION['idMembre']) && isset($_SESSION['pseudoMembre']) && isset($_SESSION['emailMembre'])){ ?>
+    if(isset($_SESSION['idMembre']) && isset($_SESSION['pseudoMembre']) && isset($_SESSION['emailMembre'])){ 
+        if(isset($_GET['id'])){
+
+       
+        
+        ?>
 
 
 
@@ -49,11 +54,11 @@
                             </div>
                             <div class="name-reciever-status">
                                 <div class="receiver-name">
-                                    <p>Bobo</p>
+                                    <p id="receiver-name">Bobo</p>
 
                                 </div>
                                 <div class="receiver-status">
-                                    <p>On line</p>
+                                    <p id="receiver-status">On line</p>
 
                                 </div>
 
@@ -120,15 +125,89 @@
         </script>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+        <script>
+            jQuery(function($){
+
+                function getInfoReceiver(id){
+
+                    $.ajax({
+                        url: 'load-info-receiver.php',
+                        type: 'GET',
+                        dataType: 'json',
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        data: {
+                            idAjax: id
+                        },
+                        success : function(response){
+                            if(response.status === "success"){
+                                $('#receiver-name').text(response.infoMembres.pseudoMembre);
+                                if(response.infoMembres.statut === "en ligne"){
+                                    $('#receiver-status').text(response.infoMembres.statut);
+
+                                }else{
+                                    // Séparer date et heure
+                                    let dateComplete = response.infoMembres.derniereConnexion;
+                                    let parts = dateComplete.split(' ');
+                                    let dateSeule = parts[0]; // "2026-06-27"
+                                    let heureSeule = parts[1]; // "15:30:45"
+                                    $('#receiver-status').text("en ligne le " + dateSeule + " à " +heureSeule);
+
+                                }
+                                
+
+                            }
+                           
+
+
+
+                            
+                        },
+                        error : function(resultat, statut, erreur){
+                            alert("erreur lors de la récupération des info du destinataire");
+                        },
+                        complete : function(resultat, statut){
+                            //alert("requette terminée");
+
+                        }
+                
+                    });
+
+
+                }
+
+                // On recupère l'id qui veint de l'url
+                const params = new URLSearchParams(window.location.search);
+
+                // Récupérer un paramètre
+                var id = params.get('id');
+                
+                // Vérifier si le paramètre existe
+                if(id){
+                    //$('#monElement').text('ID: ' + id);
+                    //alert(id);
+
+                    getInfoReceiver(id);
+
+                    
+                }
+
+            });
+        </script>
         </body>
         </html>
 
 
  <?php
-    }
-        else{
-            header("Location:index.php");
 
-        }
+        }else{
+            echo "Identifiant de l'url manquant" ;
+        }    
+
+    }
+    else{
+        header("Location:index.php");
+
+    }
 
 ?>

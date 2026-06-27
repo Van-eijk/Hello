@@ -14,6 +14,25 @@
 
          // METHODES
 
+        public function loadInfoReceiver($lienFichierBDD, $id){
+            include $lienFichierBDD ;
+            $reqInfoMembre = $connexionDataBase->prepare("SELECT pseudoMembre, statut, derniereConnexion FROM membres WHERE idMembre = :id") ;
+            $reqInfoMembre->execute(array(
+                "id" => $id
+            )) ;
+
+            if($reqInfoMembre ->rowCount() >= 1){
+            
+                $resultatAfficherMembre = $reqInfoMembre->fetch() ;
+                return $resultatAfficherMembre ;
+                    
+            }
+            else{
+                return false ;
+            }
+
+        }
+
 
         public function afficherListeMembre($lienFichierBDD){
             include $lienFichierBDD ;
