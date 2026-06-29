@@ -81,20 +81,13 @@
 
 
 
-                    <div class="main-chat w-100 h-100">
-                        <div class="box-message-left">
-                            <div class="main-message-left">
-                                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusamus, deserunt. Cumque nesciunt, sit ratione, vero eum numquam dignissimos non, maxime aspernatur vitae eos. At quam enim earum placeat nam quasi!</p>
-                                <p>12h00</p>
-                            </div>
-                        </div>
+                    <div class="main-chat w-100 h-100" id="main-chat">
+                        <p class="text-center" id="info-message">
+                            
+                        </p>
+                        
 
-                        <div class="box-message-right">
-                            <div class="main-message-right">
-                                <p>Lorem ipsum dolor sit amet consectetur, .</p>
-                                <p>13h00</p>
-                            </div>
-                        </div>
+                        
 
                     </div>
                     <div class="send-message">
@@ -128,8 +121,110 @@
 
         <script>
             jQuery(function($){
+                // On recupère l'id qui veint de l'url
+                const params = new URLSearchParams(window.location.search);
 
-                function getInfoReceiver(id){
+                // Récupérer un paramètre
+                var idReceiver = params.get('id');
+                
+                /** Fonction pour charger les messages inbox */
+
+
+                function loadMessage(idSender,idReceiver){
+                    $.ajax({
+                        url: 'load-message-inbox.php',
+                        type: 'GET',
+                        dataType: 'json',
+                        data: {
+                            idSenderAjax: idSender,
+                            idReceiverAjax: idReceiver
+
+                        },
+                        success : function(response){
+
+                            if(response.status === "success"){
+                                $("#main-chat").empty();
+
+                                //firstId = data.firstId; // On stocke l'identifiant du premier message affiché pour pouvoir l'utiliser pour afficher les anciens messages lorsque l'utilisateur scroll vers le haut de la liste des messages.
+
+                                response.listeMessage.forEach(function(itemMsg){
+                                    //console.log("Expediteur " + itemMsg.idMembreExpediteur);
+                                    //console.log("destinataire " + itemMsg.idMembreDestinataire);
+                                    
+
+                                    if(itemMsg.idMembreDestinataire == idReceiver){
+                                        //console.log(idReceiver);
+                                        $("#main-chat").append(`
+                                            <div class="box-message-right">
+                                                <div class="main-message-right">
+                                                    <p>${itemMsg.messagetext}</p>
+                                                    <p>${itemMsg.datemessage}</p>
+                                                </div>
+                                            </div>
+
+                                        `);
+                                        
+                                       
+
+                                    }else{
+                                        $("#main-chat").append(`
+                                            <div class="box-message-left">
+                                                <div class="main-message-left">
+                                                    <p>${itemMsg.messagetext}</p>
+                                                    <p>${itemMsg.datemessage}</p>
+                                                </div>
+                                            </div>
+                                        `);
+                                        
+
+                                       
+
+                                    }
+
+
+                                   
+
+                                   
+
+                                }); 
+
+                                
+
+                                // 🔥 scroll vers le bas après rendu complet
+                                setTimeout(function () {
+                                    $("#main-chat").scrollTop($("#main-chat")[0].scrollHeight);
+                                }, 50);
+
+                            }
+                            if(response.status === "erreur"){
+                                //alert(response.message);
+                                $('#info-message').css('display','block')
+                                $('#info-message').text(response.message);
+                            }
+                           
+
+                          
+
+
+                            
+                        },
+                        error : function(resultat, statut, erreur){
+                            alert("erreur lors du chargement des messages");
+                            //alert(idSenderAjax) ;
+                            //alert(idReceiverAjax);
+                        },
+                        complete : function(resultat, statut){
+                            //alert("requette terminée");
+
+                        }
+                    
+                    });
+                }
+
+
+                /** Fonction pour récupérer le pseudo et le statut de l'utilisateur en BD */
+
+                function getInfoReceiver(idReceiver){
 
                     $.ajax({
                         url: 'load-info-receiver.php',
@@ -137,7 +232,7 @@
                         dataType: 'json',
                         contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                         data: {
-                            idAjax: id
+                            idAjax: idReceiver
                         },
                         success : function(response){
                             if(response.status === "success"){
@@ -149,8 +244,8 @@
                                     // Séparer date et heure
                                     let dateComplete = response.infoMembres.derniereConnexion;
                                     let parts = dateComplete.split(' ');
-                                    let dateSeule = parts[0]; // "2026-06-27"
-                                    let heureSeule = parts[1]; // "15:30:45"
+                                    let dateSeule = parts[0]; 
+                                    let heureSeule = parts[1]; 
                                     $('#receiver-status').text("en ligne le " + dateSeule + " à " +heureSeule);
 
                                 }
@@ -176,18 +271,24 @@
 
                 }
 
-                // On recupère l'id qui veint de l'url
-                const params = new URLSearchParams(window.location.search);
-
-                // Récupérer un paramètre
-                var id = params.get('id');
-                
+               
                 // Vérifier si le paramètre existe
-                if(id){
-                    //$('#monElement').text('ID: ' + id);
-                    //alert(id);
+                if(idReceiver){
 
-                    getInfoReceiver(id);
+                    let userLogin = {
+                        idMembre: <?php echo json_encode($_SESSION['idMembre']); ?>
+                        
+                    };
+
+                    idSender = userLogin.idMembre ;
+
+                    getInfoReceiver(idReceiver);
+                    loadMessage(idSender,idReceiver);
+
+                   
+
+
+
 
                     
                 }

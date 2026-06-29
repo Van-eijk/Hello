@@ -4,15 +4,19 @@
     $lienFichierBDD = "database/configdatabase.php";
 
     $membre = new Membres();
+    $idSender = 6;
+    $idReceiver = 8 ;
 
 
-     $listeMembre = $membre->afficherListeMembre($lienFichierBDD) ;
+    $listeMessage = $membre->loadMessageInbox($lienFichierBDD,$idSender ,$idReceiver );
 
-    if($listeMembre == false){
+    if($listeMessage == false){
         echo "aucun membre" ;
 
     }
     else{
-        echo "ok" ;
+        foreach($listeMessage as $itemMessage){
+            echo $itemMessage['messagetext'];
+        }
 
     }
