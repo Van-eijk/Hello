@@ -14,12 +14,34 @@
 
         // METHODES
 
+        /** Fonction pour charger les anciens messages */
+
+        public function loadOldMessageInbox($lienFichierBDD, $firstId, $intervalle){
+            include $lienFichierBDD;
+
+            $reqOldMessage = $connexionDataBase->prepare("SELECT * FROM messageinbox WHERE idMessageInbox <= :firstId AND idMessageInbox >= :intervalleMessage ORDER BY idMessageInbox DESC");
+            $reqOldMessage->execute(array(
+                "firstId" => $firstId,
+                "intervalleMessage" => $intervalle
+
+
+            ));
+
+            if($reqOldMessage->rowCount() >= 1){
+                $resultatreqOldMessage = $reqOldMessage->fetchAll(PDO::FETCH_ASSOC) ;
+                return $resultatreqOldMessage;
+            }
+            else{
+                return false;
+            }
+        }
+
         public function loadMessageInbox($lienFichierBDD, $idSender, $idReceiver){
             include $lienFichierBDD ;
 
             //$identifiants = array() ;
 
-            $reqListeMessage = $connexionDataBase->prepare("SELECT * FROM (SELECT * FROM messageinbox WHERE (idMembreExpediteur = :idSender AND idMembreDestinataire = :idReceiver) OR (idMembreExpediteur = :idReceiver AND idMembreDestinataire = :idSender) ORDER BY datemessage DESC LIMIT 50 ) AS sous_requete ORDER BY idMessageInbox ASC ") ;
+            $reqListeMessage = $connexionDataBase->prepare("SELECT * FROM (SELECT * FROM messageinbox WHERE (idMembreExpediteur = :idSender AND idMembreDestinataire = :idReceiver) OR (idMembreExpediteur = :idReceiver AND idMembreDestinataire = :idSender) ORDER BY datemessage DESC LIMIT 5 ) AS sous_requete ORDER BY idMessageInbox ASC ") ;
             $reqListeMessage->execute(array(
                 "idSender" => $idSender,
                 "idReceiver" => $idReceiver

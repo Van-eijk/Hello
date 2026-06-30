@@ -121,6 +121,8 @@
 
         <script>
             jQuery(function($){
+                // Variable pour sauvegarder l'id du premier message qui nous permettra de charger les anciens messages
+                let firstId = 0;
                 // On recupère l'id qui veint de l'url
                 const params = new URLSearchParams(window.location.search);
 
@@ -144,12 +146,14 @@
 
                             if(response.status === "success"){
                                 $("#main-chat").empty();
+                                //console.log("ID dernier message " + response.firstMessage);
+                                firstId = response.firstMessage ;
 
                                 //firstId = data.firstId; // On stocke l'identifiant du premier message affiché pour pouvoir l'utiliser pour afficher les anciens messages lorsque l'utilisateur scroll vers le haut de la liste des messages.
 
                                 response.listeMessage.forEach(function(itemMsg){
                                     //console.log("Expediteur " + itemMsg.idMembreExpediteur);
-                                    //console.log("destinataire " + itemMsg.idMembreDestinataire);
+                                    
                                     
 
                                     if(itemMsg.idMembreDestinataire == idReceiver){
@@ -159,6 +163,7 @@
                                                 <div class="main-message-right">
                                                     <p>${itemMsg.messagetext}</p>
                                                     <p>${itemMsg.datemessage}</p>
+                                                    <p>${itemMsg.idMessageInbox}</p>
                                                 </div>
                                             </div>
 
@@ -172,6 +177,8 @@
                                                 <div class="main-message-left">
                                                     <p>${itemMsg.messagetext}</p>
                                                     <p>${itemMsg.datemessage}</p>
+                                                    <p>${itemMsg.idMessageInbox}</p>
+
                                                 </div>
                                             </div>
                                         `);
@@ -284,6 +291,105 @@
 
                     getInfoReceiver(idReceiver);
                     loadMessage(idSender,idReceiver);
+
+
+
+
+                    // Maintenant, on va afficher les anciens messages lorsque l'utilisateur scroll vers le bas de la liste des messages. Pour cela, on va faire une requette ajax pour récupérer les anciens messages à partir de l'identifiant du premier message affiché (firstId) et on va les ajouter au début de la liste des messages.
+
+                    let anciennePosition = 0 ;
+                    $("#main-chat").scroll(function(){
+                    
+                        // Position actuelle du scroll
+                        let nouvellePosition = $(this).scrollTop();
+
+
+                        if(nouvellePosition > anciennePosition){
+                            //console.log("Scroll vers le bas");
+
+                            
+
+                        }else{
+                            //console.log("Scroll vers le haut");
+
+                            
+
+                            if($("#main-chat").scrollTop() === 0 && firstId > 0){
+
+                                firstId = firstId - 1;
+                                
+
+                                // On est en haut de la liste des messages et il y a des anciens messages à afficher
+                                $.ajax({
+                                    url: 'afficherancienmessages.php',
+                                    type: 'GET',
+                                    dataType: 'json',
+                                    data: {
+                                        firstIdAjax: firstId
+                                    },
+                                    success : function(response){
+                                        if(response.status === "success"){
+                                            // Ajoute le message au début de la liste des messages
+                                            response.oldMessage.forEach(function(itemMsg){
+
+                                                if(itemMsg.idMembreDestinataire == idReceiver){
+                                                    //console.log(idReceiver);
+                                                    $("#main-chat").prepend(`
+                                                        <div class="box-message-right">
+                                                            <div class="main-message-right">
+                                                                <p>${itemMsg.messagetext}</p>
+                                                                <p>${itemMsg.datemessage}</p>
+                                                                <p>${itemMsg.idMessageInbox}</p>
+                                                            </div>
+                                                        </div>
+
+                                                    `);
+                                                    
+                                                
+
+                                                }else{
+                                                    $("#main-chat").prepend(`
+                                                        <div class="box-message-left">
+                                                            <div class="main-message-left">
+                                                                <p>${itemMsg.messagetext}</p>
+                                                                <p>${itemMsg.datemessage}</p>
+                                                                <p>${itemMsg.idMessageInbox}</p>
+
+                                                            </div>
+                                                        </div>
+                                                    `);
+                                                    
+
+                                                
+
+                                                }
+
+                                            });
+
+                                            firstId = response.newFirstId; // On met à jour l'identifiant du premier message affiché pour pouvoir afficher les autres anciens messages lorsque l'utilisateur scroll vers le haut de la liste des messages.
+
+                                            console.log(firstId);
+
+                                            $("#main-chat").scrollTop(50); // On remet le scroll à 50px pour éviter de déclencher à nouveau l'événement scroll vers le haut
+
+                                            
+                                        }else{
+                                            //alert(data.message);
+                                        }
+                                    },
+                                    error : function(resultat, statut, erreur){
+                                        alert("erreur lors du chargement des messages")
+                                    },
+                                    complete : function(resultat, statut){
+                                        //alert("requette terminée");
+                                    }
+                                });
+                            }
+                        }
+                        // Met à jour l'ancienne position pour la prochaine comparaison
+                        anciennePosition = nouvellePosition; 
+                    });
+
 
                    
 

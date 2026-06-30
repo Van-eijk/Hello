@@ -25,7 +25,7 @@
                 echo json_encode([
                     "status" => "success",
                     "listeMessage" => $listeMessage,
-                    "lastMessage" => $identifiants[0]
+                    "firstMessage" => $identifiants[0]
                 ]);
 
             }
