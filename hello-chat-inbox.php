@@ -91,7 +91,7 @@
 
                     </div>
                     <div class="send-message">
-                        <form action="">
+                        <form action="" id="form-send-message">
                             <div class="form-floating w-100">
                                 <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
                                 <label for="floatingTextarea2">Send message</label>
@@ -391,7 +391,42 @@
                     });
 
 
-                   
+                   // A present nous allons envoyer un message sans recharger la page
+
+                   $('#form-send-message').submit(function(e){
+                        e.preventDefault(); // On empeche le rechargement de la page
+
+                        messageTextArea = $("#floatingTextarea2").val().trim();
+
+                        $.ajax({
+                            url: 'sendmessage.php',
+                            type: 'POST',
+                            dataType: 'json',
+                            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                            data: {
+                                idSenderAjax: idSender,
+                                idReceiverAjax: idReceiver,
+                                contenuMessage: messageTextArea
+                            },
+                            success : function(response){
+                                    // message envoyé avec succès
+                                    //alert(resultat);
+                                    if(response.status === "success"){
+                                        alert(response.message);
+                                    }else{
+                                        alert(response.message);
+                                    }
+                                    $('#floatingTextarea2').val(''); // On vide le champ contenu
+                                    loadMessage(idSender,idReceiver); // On recharge les messages après l'envoi d'un nouveau message
+                            
+                            },
+                            error: function(xhr) {
+                                        console.log(xhr.responseText); // 🔥 debug réel
+                                        alert("Erreur lors de l'envoi du message");
+                                    }
+                        
+                        });
+                   })
 
 
 

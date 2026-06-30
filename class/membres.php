@@ -14,6 +14,26 @@
 
         // METHODES
 
+        /** Fonction pour envoyer un message inbox */
+
+        public function sendMessageInbox($lienFichierBDD, $idSender, $idReceiver, $messageText){
+            include $lienFichierBDD;
+
+            $reqSendMessageInbox = $connexionDataBase->prepare('INSERT INTO messageinbox(idMembreExpediteur,idMembreDestinataire,messagetext) VALUES(:idSender,:idReceiver,:messageText)');
+            $reqSendMessageInbox->execute(array(
+                "idSender" => $idSender,
+                "idReceiver" => $idReceiver,
+                "messageText" => $messageText
+            ));
+
+            if($reqSendMessageInbox->rowCount() >= 1){
+                return true;
+            }
+            else{
+                return false ;
+            }
+        }
+
         /** Fonction pour charger les anciens messages */
 
         public function loadOldMessageInbox($lienFichierBDD, $firstId, $intervalle){
