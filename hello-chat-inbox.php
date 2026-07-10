@@ -123,6 +123,7 @@
             jQuery(function($){
                 // Variable pour sauvegarder l'id du premier message qui nous permettra de charger les anciens messages
                 let firstId = 0;
+                let idLastMessage = 0;
                 // On recupère l'id qui veint de l'url
                 const params = new URLSearchParams(window.location.search);
 
@@ -132,7 +133,8 @@
                 /** Fonction pour charger les messages inbox */
 
 
-                function loadMessage(idSender,idReceiver){
+                function loadMessage(idSender,idReceiver, callback){
+                    let idLastMessage = 0;
                     $.ajax({
                         url: 'load-message-inbox.php',
                         type: 'GET',
@@ -146,10 +148,10 @@
 
                             if(response.status === "success"){
                                 $("#main-chat").empty();
-                                //console.log("ID dernier message " + response.firstMessage);
+                                //alert("ID dernier message success " + response.firstMessage);
                                 firstId = response.firstMessage ;
-
-                                //firstId = data.firstId; // On stocke l'identifiant du premier message affiché pour pouvoir l'utiliser pour afficher les anciens messages lorsque l'utilisateur scroll vers le haut de la liste des messages.
+                                idLastMessage = response.lastMessage ;
+                                //console.log("ID dernier message " + firstId);
 
                                 response.listeMessage.forEach(function(itemMsg){
                                     //console.log("Expediteur " + itemMsg.idMembreExpediteur);
@@ -193,14 +195,20 @@
 
                                    
 
-                                }); 
-
+                                });
                                 
 
                                 // 🔥 scroll vers le bas après rendu complet
                                 setTimeout(function () {
                                     $("#main-chat").scrollTop($("#main-chat")[0].scrollHeight);
                                 }, 50);
+
+
+                                if (callback && typeof callback === 'function') {
+                                    callback(idLastMessage);
+                                }
+
+                                
 
                             }
                             if(response.status === "erreur"){
@@ -226,6 +234,10 @@
                         }
                     
                     });
+
+                   
+
+                    
                 }
 
 
@@ -278,9 +290,90 @@
 
                 }
 
+                // fonction pour verifier s'il y'a de nouveaux messages toutes les 1 seconde
+
+                function checkNewMessage(idSender,idReceiver,idLastMessage, callback){
+                    $.ajax({
+                        url: 'check-new-message.php',
+                        type: 'GET',
+                        dataType: 'json',
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        data: {
+                            idSenderAjax: idSender,
+                            idReceiverAjax: idReceiver,
+                            lastIdMessageAjax: idLastMessage
+                        },
+                        success : function(response){
+                            if(response.status === "success"){
+                                //alert("Nouveaux messages reçus");
+                                response.newMessages.forEach(function(itemMsg){
+                                    //console.log("Expediteur " + itemMsg.idMembreExpediteur);
+                                    //alert("Nouveaux messages reçus " + itemMsg.messagetext);
+
+                                        //idLastMessage = itemMsg.idMessageInbox ;
+                                       if(itemMsg.idMembreDestinataire == idReceiver && itemMsg.idMembreExpediteur != idSender){
+                                            //console.log(idReceiver);
+                                            $("#main-chat").append(`
+                                                <div class="box-message-right">
+                                                    <div class="main-message-right">
+                                                        <p>${itemMsg.messagetext}</p>
+                                                        <p>${itemMsg.datemessage}</p>
+                                                        <p>${itemMsg.idMessageInbox}</p>
+                                                    </div>
+                                                </div>
+
+                                            `);
+                                        
+                                        }else{
+                                            $("#main-chat").append(`
+                                                <div class="box-message-left">
+                                                    <div class="main-message-left">
+                                                        <p>${itemMsg.messagetext}</p>
+                                                        <p>${itemMsg.datemessage}</p>
+                                                        <p>${itemMsg.idMessageInbox}</p>
+
+                                                    </div>
+                                                </div>
+                                            `);
+                                        }
+
+                                    
+
+                                    idLastMessage = itemMsg.idMessageInbox ; // On met à jour l'identifiant du dernier message affiché pour pouvoir vérifier les nouveaux messages lorsque l'utilisateur scroll vers le bas de la liste des messages.
+                                });
+                                $("#main-chat").scrollTop($("#main-chat")[0].scrollHeight);
+
+                                if(callback && typeof callback === 'function'){
+                                    callback(idLastMessage);
+                                }
+
+                                /* loadMessage(idSender,idReceiver, function(newLastId) {
+                                    //console.log("Nouvel ID dernier message : " + newLastId);
+                                    idLastMessage = newLastId;
+                                });*/
+                            }
+                            if(response.status === "error"){
+                                //alert(response.message);
+                            }
+                            
+                        },
+                        error : function(resultat, statut, erreur){
+                            alert("erreur lors de la vérification des nouveaux messages");
+                        },
+                        complete : function(resultat, statut){
+                            //alert("requette terminée");
+
+                        }
+                
+                    });
+                }
+
+
+
                
                 // Vérifier si le paramètre existe
                 if(idReceiver){
+                    let idMessageRecent = 0;
 
                     let userLogin = {
                         idMembre: <?php echo json_encode($_SESSION['idMembre']); ?>
@@ -290,7 +383,30 @@
                     idSender = userLogin.idMembre ;
 
                     getInfoReceiver(idReceiver);
-                    loadMessage(idSender,idReceiver);
+                    //loadMessage(idSender,idReceiver);
+
+                    loadMessage(idSender, idReceiver, function(newLastId) {
+                        //console.log("Nouvel ID dernier message : " + newLastId);
+
+                        // Tu peux utiliser newLastId ici
+                        idLastMessage = newLastId;
+
+
+                        // A present nous allons faire un setInterval pour vérifier si il y a de nouveaux messages toutes les 5 secondes. Pour cela, on va faire une requette ajax pour récupérer les nouveaux messages à partir de l'identifiant du dernier message affiché (idLastMessage) et on va les ajouter à la fin de la liste des messages.
+
+                        
+
+                    });
+
+                    setInterval(function() {
+                        checkNewMessage(idSender, idReceiver, idLastMessage, function(newLastId) {
+                            idLastMessage = newLastId;
+                        });
+                    }, 500);
+
+                   
+
+
 
 
 
@@ -316,7 +432,8 @@
 
                             if($("#main-chat").scrollTop() === 0 && firstId > 0){
 
-                                firstId = firstId - 1;
+                                //firstId = firstId - 1;
+                                
                                 
 
                                 // On est en haut de la liste des messages et il y a des anciens messages à afficher
@@ -325,7 +442,9 @@
                                     type: 'GET',
                                     dataType: 'json',
                                     data: {
-                                        firstIdAjax: firstId
+                                        firstIdAjax: firstId,
+                                        idSenderAjax: idSender,
+                                        idReceiverAjax: idReceiver
                                     },
                                     success : function(response){
                                         if(response.status === "success"){
@@ -368,7 +487,7 @@
 
                                             firstId = response.newFirstId; // On met à jour l'identifiant du premier message affiché pour pouvoir afficher les autres anciens messages lorsque l'utilisateur scroll vers le haut de la liste des messages.
 
-                                            console.log(firstId);
+                                            //console.log(firstId);
 
                                             $("#main-chat").scrollTop(50); // On remet le scroll à 50px pour éviter de déclencher à nouveau l'événement scroll vers le haut
 
@@ -412,12 +531,25 @@
                                     // message envoyé avec succès
                                     //alert(resultat);
                                     if(response.status === "success"){
-                                        alert(response.message);
+                                        //alert(response.message);
                                     }else{
                                         alert(response.message);
                                     }
                                     $('#floatingTextarea2').val(''); // On vide le champ contenu
-                                    loadMessage(idSender,idReceiver); // On recharge les messages après l'envoi d'un nouveau message
+                                    //loadMessage(idSender,idReceiver); // On recharge les messages après l'envoi d'un nouveau message
+
+                                    loadMessage(idSender, idReceiver, function(newLastId) {
+                                        //console.log("Nouvel ID dernier message : " + newLastId);
+
+                                        // Tu peux utiliser newLastId ici
+                                        idLastMessage = newLastId;
+
+
+                                        // A present nous allons faire un setInterval pour vérifier si il y a de nouveaux messages toutes les 5 secondes. Pour cela, on va faire une requette ajax pour récupérer les nouveaux messages à partir de l'identifiant du dernier message affiché (idLastMessage) et on va les ajouter à la fin de la liste des messages.
+
+                                        
+
+                                    });
                             
                             },
                             error: function(xhr) {

@@ -14,6 +14,26 @@
 
         // METHODES
 
+        /** Fonction pour récupérer les nouveaux messages */
+        public function getNewMessages($idSender, $idReceiver, $lastIdMessage){
+            include 'database/configdatabase.php';
+
+            $reqNewMessage = $connexionDataBase->prepare("SELECT * FROM messageinbox WHERE ((idMembreExpediteur = :idSender AND idMembreDestinataire = :idReceiver) OR (idMembreExpediteur = :idReceiver AND idMembreDestinataire = :idSender)) AND idMessageInbox > :lastIdMessage ORDER BY idMessageInbox ASC");
+            $reqNewMessage->execute(array(
+                "idSender" => $idSender,
+                "idReceiver" => $idReceiver,
+                "lastIdMessage" => $lastIdMessage
+            ));
+
+            if($reqNewMessage->rowCount() >= 1){
+                $resultatReqNewMessage = $reqNewMessage->fetchAll(PDO::FETCH_ASSOC) ;
+                return $resultatReqNewMessage;
+            }
+            else{
+                return false;
+            }
+        }
+
         /** Fonction pour envoyer un message inbox */
 
         public function sendMessageInbox($lienFichierBDD, $idSender, $idReceiver, $messageText){
@@ -36,15 +56,15 @@
 
         /** Fonction pour charger les anciens messages */
 
-        public function loadOldMessageInbox($lienFichierBDD, $firstId, $intervalle){
+        public function loadOldMessageInbox($lienFichierBDD, $firstId, $idSender, $idReceiver){
             include $lienFichierBDD;
 
-            $reqOldMessage = $connexionDataBase->prepare("SELECT * FROM messageinbox WHERE idMessageInbox <= :firstId AND idMessageInbox >= :intervalleMessage ORDER BY idMessageInbox DESC");
+            $reqOldMessage = $connexionDataBase->prepare("SELECT * FROM messageinbox WHERE ((idMembreExpediteur = :idSender AND idMembreDestinataire = :idReceiver) OR (idMembreExpediteur = :idReceiver AND idMembreDestinataire = :idSender)) AND (idMessageInbox < :firstId) ORDER BY idMessageInbox DESC LIMIT 3");
             $reqOldMessage->execute(array(
+                "idSender" => $idSender,
+                "idReceiver" => $idReceiver,
                 "firstId" => $firstId,
-                "intervalleMessage" => $intervalle
-
-
+                
             ));
 
             if($reqOldMessage->rowCount() >= 1){
