@@ -14,6 +14,25 @@
 
         // METHODES
 
+        /** Fonction pour afficher les discussions recentes en inbox */
+
+        public function afficherDiscussionInbox($lienFichierBDD, $idMembre){
+            include $lienFichierBDD ;
+
+            $reqDiscussionInbox = $connexionDataBase->prepare("SELECT expediteur.pseudoMembre AS sender, destinataire.pseudoMembre AS receiver, message.idMembreExpediteur, message.idMembreDestinataire, message.messagetext, message.datemessage FROM membres AS expediteur INNER JOIN messageinbox AS message ON message.idMembreExpediteur = expediteur.idMembre INNER JOIN membres AS destinataire ON idMembreDestinataire = destinataire.idMembre WHERE (idMembreExpediteur = :idMembre OR idMembreDestinataire = :idMembre) ORDER BY datemessage DESC ") ;
+            $reqDiscussionInbox->execute(array(
+                "idMembre" => $idMembre
+            )) ;
+
+            if($reqDiscussionInbox->rowCount() >= 1){
+                $resultatReqDiscussionInbox = $reqDiscussionInbox->fetchAll(PDO::FETCH_ASSOC) ;
+                return $resultatReqDiscussionInbox;
+            }
+            else{
+                return false;
+            }
+        }
+
         /** Fonction pour récupérer les nouveaux messages */
         public function getNewMessages($idSender, $idReceiver, $lastIdMessage){
             include 'database/configdatabase.php';

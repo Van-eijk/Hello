@@ -27,126 +27,14 @@
                 <?php include "header.php" ; ?>
                 <?php include 'popupdeconnexion.php'; //Confirmation de déconnexion de l'utilisateur ?>
 
-                <div class="main-content">
+                <div class="main-content" id="main-content">
+                    <p id="info-discussion"></p>
 
-                    <a href="hello-chat-inbox.php">
-                        <div class="item-message">
-                            <div class="icon-message">
-                                <span>
-                                    <i class="bi bi-person-circle"></i>
-                                </span>
-
-                            </div>
-                            <div class="main-message border-bottom">
-                                <div class="sender-message">
-                                    <p>Bobo</p>
-
-                                </div>
-                                <div class="message-text">
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate officia placeat rerum deleniti accusamus voluptatibus vero ad, ducimus nesciunt vitae eaque praesentium ut quo mollitia, voluptatum explicabo temporibus in minima.</p>
-                                </div>
-
-                            </div>
-                            <div class="hour-message">
-                                <p>13:00</p>
-                                <div class="new-message">
-                                    <span>1</span>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
+                   
 
 
 
-                    <a href="hello-chat-inbox.php">
-                        <div class="item-message">
-                            <div class="icon-message">
-                                <span>
-                                    <i class="bi bi-person-circle"></i>
-                                </span>
-
-                            </div>
-                            <div class="main-message border-bottom">
-                                <div class="sender-message">
-                                    <p>Bobo</p>
-
-                                </div>
-                                <div class="message-text">
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate officia placeat rerum deleniti accusamus voluptatibus vero ad, ducimus nesciunt vitae eaque praesentium ut quo mollitia, voluptatum explicabo temporibus in minima.</p>
-                                </div>
-
-                            </div>
-                            <div class="hour-message">
-                                <p>13:00</p>
-                                <div class="new-message">
-                                    <span>1</span>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-
-
-
-
-
-                    <a href="hello-chat-inbox.php">
-                        <div class="item-message">
-                            <div class="icon-message">
-                                <span>
-                                    <i class="bi bi-person-circle"></i>
-                                </span>
-
-                            </div>
-                            <div class="main-message border-bottom">
-                                <div class="sender-message">
-                                    <p>Bobo</p>
-
-                                </div>
-                                <div class="message-text">
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate officia placeat rerum deleniti accusamus voluptatibus vero ad, ducimus nesciunt vitae eaque praesentium ut quo mollitia, voluptatum explicabo temporibus in minima.</p>
-                                </div>
-
-                            </div>
-                            <div class="hour-message">
-                                <p>13:00</p>
-                                <div class="new-message">
-                                    <span>1</span>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-
-
-
-
-
-                    <a href="hello-chat-inbox.php">
-                        <div class="item-message">
-                            <div class="icon-message">
-                                <span>
-                                    <i class="bi bi-person-circle"></i>
-                                </span>
-
-                            </div>
-                            <div class="main-message border-bottom">
-                                <div class="sender-message">
-                                    <p>Bobo</p>
-
-                                </div>
-                                <div class="message-text">
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate officia placeat rerum deleniti accusamus voluptatibus vero ad, ducimus nesciunt vitae eaque praesentium ut quo mollitia, voluptatum explicabo temporibus in minima.</p>
-                                </div>
-
-                            </div>
-                            <div class="hour-message">
-                                <p>13:00</p>
-                                <div class="new-message">
-                                    <span>1</span>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-
+                    
                 </div>
             </div>
 
@@ -157,6 +45,120 @@
             </script>
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+            <script>
+               jQuery(function($){
+
+                    // On récupère l'identifiant du membre connecté depuis la session
+                    let idMembre = <?php if(isset($_SESSION['idMembre'])) { echo $_SESSION['idMembre']; }?>;
+                    let pseudoMembre = "<?php if(isset($_SESSION['pseudoMembre'])) { echo $_SESSION['pseudoMembre']; }?>";
+
+
+                  
+
+
+                    function loadDiscussionInbox(idMembre){
+                        $.ajax({
+                            url: 'afficherDiscussionInbox.php',
+                            type: 'GET',
+                            dataType: 'json',
+                            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                            data: {
+                                idMembreAjax : idMembre
+
+                            },
+                            success : function(response){
+                                
+                                if(response.status === "success"){
+                                    
+                                    //alert("Discussions récentes récupérées avec succès !");
+                                    $('#main-content').empty(); // On vide le contenu de la div avant d'ajouter les nouvelles discussions
+                                    response.discussionsInbox.forEach(function(discussion){
+                                        if(discussion.sender === pseudoMembre){
+                                            discussion.sender = discussion.receiver; // On remplace le pseudo de l'expéditeur par celui du destinataire si l'expéditeur est le membre connecté
+                                        }
+
+                                        if(discussion.idMembreDestinataire === idMembre){
+                                            discussion.idMembreDestinataire = discussion.idMembreExpediteur; // On remplace l'identifiant du destinataire par celui de l'expéditeur si le destinataire est le membre connecté
+                                        }
+
+                                        
+
+                            
+                                       
+                                        let discussionHTML = `
+                                           <a href="hello-chat-inbox.php?id=${discussion.idMembreDestinataire}" class="discussion-item">
+                                                <div class="item-message">
+                                                    <div class="icon-message">
+                                                        <span>
+                                                            <i class="bi bi-person-circle"></i>
+                                                        </span>
+
+                                                    </div>
+                                                    <div class="main-message border-bottom">
+                                                        <div class="sender-message">
+                                                            <h5>${discussion.sender}</h5>
+                                                        </div>
+                                                        <div class="message-text">
+                                                            <p>${discussion.messagetext}</p>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="hour-message">
+                                                        <p>${discussion.datemessage}</p>
+                                                        <div class="new-message">
+                                                            <span>1</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        `;
+
+                                        // Maintenant on vérifie si l'expéditeur est déjà présent dans la liste des discussions pour éviter les doublons. Si l'expéditeur est déjà présent, on ne l'ajoute pas à la liste.
+
+                                        let discussionitem = $(".discussion-item"); //On récupère tous les éléments de discussion déjà présents dans la liste
+                                        let text = discussionitem.map(function(){
+                                            return $(this).find(".sender-message h5").text() ;
+                                        }).get() ; // On récupère le texte de tous les éléments de discussion déjà présents dans la liste et on le stocke dans un tableau
+
+                                        if(text.includes(discussion.sender)){
+                                            console.log("présent") ;
+                                        }
+                                        else{
+                                            $('#main-content').append(discussionHTML); // On ajoute l'élément de discussion à la liste si l'expéditeur n'est pas déjà présent
+                                        }
+
+
+
+                                       
+                                        //$('#main-content').append(discussionHTML);
+
+                                        
+                                    });
+
+
+                                }else{
+                                    //alert("Aucune discussion récente");
+                                    $('#info-discussion').text(response.message);
+                                }
+                                
+                            
+                            },
+                            error: function(xhr) {
+                                console.log(xhr.responseText); // 🔥 debug réel
+                                alert("Erreur avec la communication avec la BD");
+                            }
+                        
+                        });
+                    }
+
+
+
+                    loadDiscussionInbox(idMembre);
+
+
+                   
+                });
+            </script>
         </body>
         </html>
 

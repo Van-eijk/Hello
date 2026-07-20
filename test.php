@@ -1,22 +1,68 @@
-<?php
-    include 'class/uploadclass.php';
-    include 'database/configdatabase.php';
-    $lienFichierBDD = "database/configdatabase.php";
-
-    $membre = new Membres();
-    $idSender = 6;
-    $idReceiver = 8 ;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 
 
-    $listeMessage = $membre->loadMessageInbox($lienFichierBDD,$idSender ,$idReceiver );
+      <!-- lien pour integrer le framework boostrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="informations">
+            <a href="" class="nom">
+                <p>John</p>
+                
+            </a>
 
-    if($listeMessage == false){
-        echo "aucun membre" ;
+            <a href="" class="nom">
+                <p>Doe</p>
+                
+            </a>
 
-    }
-    else{
-        foreach($listeMessage as $itemMessage){
-            echo $itemMessage['messagetext'];
-        }
+            <a href="" class="nom">
+                <p>Junior</p>
+                
+            </a>
+           
 
-    }
+        </div>
+    </div>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+    <script>
+        jQuery(function($){
+            let listNoms = $(".nom") ;
+           
+
+            let text = listNoms.map(function(){
+                return $(this).find("p").text() ;
+            }).get() ;
+            //console.log(text) ;
+
+            if(text.includes("bb")){
+                console.log(" présent") ;
+            }
+            else{
+                console.log("n'est pas présent") ;
+            }
+
+        });
+    </script>
+
+    
+</body>
+</html>

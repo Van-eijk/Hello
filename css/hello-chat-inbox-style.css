@@ -101,15 +101,16 @@
 
 }
 .main-message-left{
-    border: 2px solid black;
     max-width: 50%;
-    background-color: aqua;
+    background-color: rgb(236, 231, 241);
 
     border-top-left-radius: 0px;
     border-top-right-radius: 15px;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
-    padding: 5px;
+    padding: 10px;
+    font-weight: 400;
+
 }
 .box-message-right{
     /*border: 2px solid red;*/
@@ -123,14 +124,15 @@
 }
 
 .main-message-right{
-    border: 2px solid blue;
-    background-color: beige;
+    background-color: blueviolet;
     max-width: 50%;
     border-top-left-radius: 15px;
     border-top-right-radius: 0px;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
-    padding: 5px;
+    padding: 10px;
+    color: white;
+    font-weight: 400;
 }
 .send-message form{
     display: flex;
