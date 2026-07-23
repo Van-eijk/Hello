@@ -14,12 +14,32 @@
 
         // METHODES
 
+        /** Fonction Pour mettre jour la liste des discussions automatiquement */
+
+        public function getNewDiscussions($lienFichierBDD, $idMembre, $lastIdMessage){
+            include $lienFichierBDD ;
+
+            $reqNewDiscussion = $connexionDataBase->prepare("SELECT message.idMessageInbox as idMessageInbox, expediteur.pseudoMembre AS sender, destinataire.pseudoMembre AS receiver, message.idMembreExpediteur, message.idMembreDestinataire, message.messagetext, message.datemessage FROM membres AS expediteur INNER JOIN messageinbox AS message ON message.idMembreExpediteur = expediteur.idMembre INNER JOIN membres AS destinataire ON idMembreDestinataire = destinataire.idMembre WHERE (idMembreExpediteur = :idMembre OR idMembreDestinataire = :idMembre) AND message.idMessageInbox > :lastIdMessage ORDER BY datemessage DESC LIMIT 1 OFFSET 0") ;
+            $reqNewDiscussion->execute(array(
+                "idMembre" => $idMembre,
+                "lastIdMessage" => $lastIdMessage
+            ));
+
+            if($reqNewDiscussion->rowCount() >= 1){
+                $resultatReqNewDiscussion = $reqNewDiscussion->fetchAll(PDO::FETCH_ASSOC) ;
+                return $resultatReqNewDiscussion;
+            }
+            else{
+                return false;
+            }
+        }
+
         /** Fonction pour afficher les discussions recentes en inbox */
 
         public function afficherDiscussionInbox($lienFichierBDD, $idMembre){
             include $lienFichierBDD ;
 
-            $reqDiscussionInbox = $connexionDataBase->prepare("SELECT expediteur.pseudoMembre AS sender, destinataire.pseudoMembre AS receiver, message.idMembreExpediteur, message.idMembreDestinataire, message.messagetext, message.datemessage FROM membres AS expediteur INNER JOIN messageinbox AS message ON message.idMembreExpediteur = expediteur.idMembre INNER JOIN membres AS destinataire ON idMembreDestinataire = destinataire.idMembre WHERE (idMembreExpediteur = :idMembre OR idMembreDestinataire = :idMembre) ORDER BY datemessage DESC ") ;
+            $reqDiscussionInbox = $connexionDataBase->prepare("SELECT message.idMessageInbox as idMessageInbox, expediteur.pseudoMembre AS sender, destinataire.pseudoMembre AS receiver, message.idMembreExpediteur, message.idMembreDestinataire, message.messagetext, message.datemessage FROM membres AS expediteur INNER JOIN messageinbox AS message ON message.idMembreExpediteur = expediteur.idMembre INNER JOIN membres AS destinataire ON idMembreDestinataire = destinataire.idMembre WHERE (idMembreExpediteur = :idMembre OR idMembreDestinataire = :idMembre) ORDER BY datemessage DESC ") ;
             $reqDiscussionInbox->execute(array(
                 "idMembre" => $idMembre
             )) ;

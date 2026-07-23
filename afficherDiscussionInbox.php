@@ -4,6 +4,7 @@
     include 'database/configdatabase.php';
     $lienFichierBDD = "database/configdatabase.php";
     include $lienFichierBDD;
+    $messageId = array();
 
     if(!isset($_GET['idMembreAjax'])) {
         header('Location: index.php');
@@ -20,6 +21,8 @@
                 "message" => "Aucune discussion récente"
             ]);
         }else{
+
+           
             echo json_encode([
                 "status" => "success",
                 "discussionsInbox" => $discussionsInbox
