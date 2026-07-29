@@ -14,6 +14,27 @@
 
         // METHODES
 
+        /** Fonction pour confirmer la lecture d'un message */
+
+        public function confirmReadMessage($lienFichierBDD, $idMessageInbox, $idMembreExpediteur, $idMembreDestinataire){
+            include $lienFichierBDD ;
+
+            $reqConfirmReadMessage = $connexionDataBase->prepare("UPDATE messageinbox SET vueMessage = :vueMessage WHERE ((idMembreExpediteur = :idMembreExpediteur AND idMembreDestinataire = :idMembreDestinataire) OR (idMembreExpediteur = :idMembreDestinataire AND idMembreDestinataire = :idMembreExpediteur)) AND idMessageInbox <= :idMessageInbox") ;
+            $reqConfirmReadMessage->execute(array(
+                "vueMessage" => "TRUE",
+                "idMessageInbox" => $idMessageInbox,
+                "idMembreExpediteur" => $idMembreExpediteur,
+                "idMembreDestinataire" => $idMembreDestinataire
+            )) ;
+
+            if($reqConfirmReadMessage->rowCount() >= 1){
+                return true ;
+            }
+            else{
+                return false ;
+            }
+        }
+
         /** Fonction Pour mettre jour la liste des discussions automatiquement */
 
         public function getNewDiscussions($lienFichierBDD, $idMembre, $lastIdMessage){

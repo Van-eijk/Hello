@@ -59,6 +59,7 @@
 
 
                     function loadDiscussionInbox(idMembre, callback){
+                        let destinataireId = 0 ; // On initialise l'identifiant du destinataire à 0 pour pouvoir le récupérer plus tard
                         let discussionId = [] ; // On initialise un tableau pour stocker les identifiants des discussions
                         $.ajax({
                             url: 'afficherDiscussionInbox.php',
@@ -80,6 +81,7 @@
                                     response.discussionsInbox.forEach(function(discussion){
 
                                         discussionId.push(discussion.idMessageInbox) ; // On ajoute l'identifiant de la discussion au tableau
+                                        destinataireId = discussion.idMembreDestinataire ; // On récupère l'identifiant du destinataire
                                       
                                         if(discussion.sender === pseudoMembre){
                                             discussion.sender = discussion.receiver; // On remplace le pseudo de l'expéditeur par celui du destinataire si l'expéditeur est le membre connecté
@@ -94,7 +96,7 @@
                             
                                        
                                         let discussionHTML = `
-                                           <a href="hello-chat-inbox.php?id=${discussion.idMembreDestinataire}" class="discussion-item" id="${discussion.idMembreDestinataire}">
+                                           <a href="hello-chat-inbox.php?id=${discussion.idMembreDestinataire}" class="discussion-item" id="${discussion.idMembreDestinataire}" data-idmessageinbox="${discussion.idMessageInbox}" data-idmembreexpediteur="${discussion.idMembreExpediteur}" data-idmembredestinataire="${destinataireId}">
                                                 <div class="item-message">
                                                     <div class="icon-message">
                                                         <span>
@@ -171,11 +173,12 @@
 
                     // Fonction pour verifier l'arrivage de nouveaux messages dans la discussion
 
-                    let newD = false ;
+                   
 
                     function getNewDiscussions(idMembre, pseudoMembre, lastIdMessage, callback){
                         let discussionId = [] ; // On initialise un tableau pour stocker les identifiants des discussions
                         let identifiantDiscussion = 0 ;
+                        let destinataireId = 0 ; // On initialise l'identifiant du destinataire à 0 pour pouvoir le récupérer plus tard
 
                         $.ajax({
                             url: 'getNewDiscussions.php',
@@ -193,6 +196,8 @@
                                     response.newDiscussions.forEach(function(discussion){
 
                                         discussionId.push(discussion.idMessageInbox) ; // On ajoute l'identifiant de la discussion au tableau
+                                        destinataireId = discussion.idMembreDestinataire ; // On récupère l'identifiant du destinataire
+
 
 
                                         if(discussion.sender === pseudoMembre){
@@ -205,7 +210,7 @@
 
 
                                         let discussionHTML = `
-                                            <a href="hello-chat-inbox.php?id=${discussion.idMembreDestinataire}" class="discussion-item" id="${discussion.idMembreDestinataire}">
+                                            <a href="hello-chat-inbox.php?id=${discussion.idMembreDestinataire}" class="discussion-item" id="${discussion.idMembreDestinataire}" data-idmessageinbox="${discussion.idMessageInbox}" data-idmembreexpediteur="${discussion.idMembreExpediteur}" data-idmembredestinataire="${destinataireId}">
                                                 <div class="item-message">
                                                     <div class="icon-message">
                                                         <span>
@@ -294,6 +299,68 @@
 
                         
                     });
+
+
+                    // Fonction pour confirmer la flecture d'un message par le membre connecté
+
+                    function confirmReadMessage(idMessageInbox, idMembreExpediteur, idMembreDestinataire){
+                        $.ajax({
+                            url: 'confirmReadMessage.php',
+                            type: 'GET',
+                            dataType: 'json',
+                            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                            data: {
+                               
+                                idMessageInboxAjax: idMessageInbox,
+                                idMembreExpediteurAjax: idMembreExpediteur,
+                                idMembreDestinataireAjax: idMembreDestinataire
+                            },
+                            success : function(response){
+                                if(response.status === "success"){
+                                    //alert("Lecture du message confirmée !");
+                                    console.log(response.message);
+                                   
+                                }else{
+                                    console.log(response.message);
+                                }
+                                
+                            },
+                            error : function(resultat, statut, erreur){
+                                alert("erreur lors de la confirmation de lecture du message");
+                            },
+                            complete : function(resultat, statut){
+                                //alert("requette terminée");
+
+                            }
+                    
+                        });
+                    }
+
+
+                    $('#main-content').on('click', '.discussion-item', function() {
+                        //e.preventDefault(); // Empêche le comportement par défaut du lien
+
+                        //alert("click sur la discussion");
+                        let idMessageInbox = $(this).data('idmessageinbox');
+                        let idMembreExpediteur = $(this).data('idmembreexpediteur');
+                        let idMembreDestinataire = $(this).data('idmembredestinataire');
+                        //console.log("ID récupéré : " + idMessageInbox);
+                        //alert("ID récupéré : " + idMessageInbox + " | ID Expéditeur : " + idMembreExpediteur + " | ID Destinataire : " + idMembreDestinataire);
+                        
+                        if (idMessageInbox) {
+                            if(idMembre === idMembreDestinataire){
+                                confirmReadMessage(idMessageInbox, idMembreExpediteur, idMembreDestinataire);
+                            }
+                           
+                        } else {
+                            alert("Aucun ID trouvé pour cet élément");
+                        }
+                    });
+
+
+                   
+
+
 
 
 
