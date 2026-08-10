@@ -15,20 +15,8 @@
 <body>
     <div class="container">
         <div class="informations">
-            <a href="" class="nom">
-                <p>John</p>
-                
-            </a>
-
-            <a href="" class="nom">
-                <p>Doe</p>
-                
-            </a>
-
-            <a href="" class="nom">
-                <p>Junior</p>
-                
-            </a>
+           <p class="textone">John</p>
+        
            
 
         </div>
@@ -45,20 +33,24 @@
 
     <script>
         jQuery(function($){
-            let listNoms = $(".nom") ;
-           
+            let a = 0;
 
-            let text = listNoms.map(function(){
-                return $(this).find("p").text() ;
-            }).get() ;
-            //console.log(text) ;
+            if(a == 1){
+                statusMessage = `
+                <span class="message-send">
+                    <i class="bi bi-check2 "></i>
+                </span>`;
+            }else{
+                statusMessage = `
+                <span class="message-received">
+                    <i class="bi bi-check2-all"></i>
+                </span>`;
+            }
+            
 
-            if(text.includes("bb")){
-                console.log(" présent") ;
-            }
-            else{
-                console.log("n'est pas présent") ;
-            }
+            $(".informations").append(statusMessage);
+            alert(statusMessage);
+            
 
         });
     </script>

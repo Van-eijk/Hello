@@ -26,8 +26,9 @@
                 integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
             <script src="https://kit.fontawesome.com/14273d579a.js" crossorigin="anonymous"></script>
-            <link rel="stylesheet" href="css/hello-chat-inbox-style.css">
             <link rel="stylesheet" href="css/header.css">
+            <link rel="stylesheet" href="css/hello-chat-inbox-style.css">
+
         </head>
         <body>
 
@@ -81,7 +82,7 @@
 
 
 
-                    <div class="main-chat w-100 h-100" id="main-chat">
+                    <div class="main-chat w-100" id="main-chat">
                         <p class="text-center" id="info-message">
                             
                         </p>
@@ -92,7 +93,7 @@
                     </div>
                     <div class="send-message">
                         <form action="" id="form-send-message">
-                            <div class="form-floating w-100">
+                            <div class="form-floating w-100 rounded m-2">
                                 <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
                                 <label for="floatingTextarea2">Send message</label>
                             </div>
@@ -134,6 +135,7 @@
 
 
                 function loadMessage(idSender,idReceiver, callback){
+                    let statutMessage;
                     let idLastMessage = 0;
                     $.ajax({
                         url: 'load-message-inbox.php',
@@ -154,7 +156,16 @@
                                 //console.log("ID dernier message " + firstId);
 
                                 response.listeMessage.forEach(function(itemMsg){
-                                    //console.log("Expediteur " + itemMsg.idMembreExpediteur);
+                                    if(itemMsg.statutMessage === "send"){
+                                        statutMessage = `<i class="bi bi-check2 text-black-50"></i>`;
+                                    }
+                                    else if(itemMsg.statutMessage === "received"){
+                                        statutMessage = `<i class="bi bi-check2-all text-black-50"></i>`;
+                                    }
+                                    else if(itemMsg.statutMessage === "seen"){
+                                        statutMessage = `<i class="bi bi-check2-all text-primary"></i>`;
+                                    }
+                                   
                                     
                                     
 
@@ -164,8 +175,15 @@
                                             <div class="box-message-right">
                                                 <div class="main-message-right">
                                                     <p>${itemMsg.messagetext}</p>
-                                                    <p>${itemMsg.datemessage}</p>
-                                                    <p>${itemMsg.idMessageInbox}</p>
+                                                    
+                                                    <div class="statut-message-date">
+                                                        <p>${itemMsg.datemessage}</p>
+                                                        
+                                                        <span class=" message-status">
+                                                            ${statutMessage}
+                                                        </span>
+
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -178,8 +196,12 @@
                                             <div class="box-message-left">
                                                 <div class="main-message-left">
                                                     <p>${itemMsg.messagetext}</p>
-                                                    <p>${itemMsg.datemessage}</p>
-                                                    <p>${itemMsg.idMessageInbox}</p>
+                                                   <div class="statut-message-date">
+                                                        <p>${itemMsg.datemessage}</p>
+                                                        
+                                                       
+
+                                                    </div>
 
                                                 </div>
                                             </div>
@@ -200,6 +222,7 @@
 
                                 // 🔥 scroll vers le bas après rendu complet
                                 setTimeout(function () {
+                                    //console.log("Scroll forcé vers le bas");
                                     $("#main-chat").scrollTop($("#main-chat")[0].scrollHeight);
                                 }, 50);
 
@@ -304,7 +327,7 @@
                             lastIdMessageAjax: idLastMessage
                         },
                         success : function(response){
-                            if(response.status === "success"){
+                            if(response.status === "success" && response.newMessages.length > 0){
                                 //alert("Nouveaux messages reçus");
                                 response.newMessages.forEach(function(itemMsg){
                                     //console.log("Expediteur " + itemMsg.idMembreExpediteur);
@@ -317,8 +340,15 @@
                                                 <div class="box-message-right">
                                                     <div class="main-message-right">
                                                         <p>${itemMsg.messagetext}</p>
-                                                        <p>${itemMsg.datemessage}</p>
-                                                        <p>${itemMsg.idMessageInbox}</p>
+                                                        
+                                                        <div class="statut-message-date">
+                                                            <p>${itemMsg.datemessage}</p>
+                                                            
+                                                            <span class=" message-status">
+                                                                ${statutMessage}
+                                                            </span>
+
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -329,8 +359,12 @@
                                                 <div class="box-message-left">
                                                     <div class="main-message-left">
                                                         <p>${itemMsg.messagetext}</p>
-                                                        <p>${itemMsg.datemessage}</p>
-                                                        <p>${itemMsg.idMessageInbox}</p>
+                                                    <div class="statut-message-date">
+                                                            <p>${itemMsg.datemessage}</p>
+                                                            
+                                                        
+
+                                                        </div>
 
                                                     </div>
                                                 </div>
@@ -341,6 +375,7 @@
 
                                     idLastMessage = itemMsg.idMessageInbox ; // On met à jour l'identifiant du dernier message affiché pour pouvoir vérifier les nouveaux messages lorsque l'utilisateur scroll vers le bas de la liste des messages.
                                 });
+                                console.log("Scroll forcé vers le bas");
                                 $("#main-chat").scrollTop($("#main-chat")[0].scrollHeight);
 
                                 if(callback && typeof callback === 'function'){
@@ -457,8 +492,14 @@
                                                         <div class="box-message-right">
                                                             <div class="main-message-right">
                                                                 <p>${itemMsg.messagetext}</p>
-                                                                <p>${itemMsg.datemessage}</p>
-                                                                <p>${itemMsg.idMessageInbox}</p>
+                                                                <div class="statut-message-date">
+                                                                    <p>${itemMsg.datemessage}</p>
+                                                                    
+                                                                    <span class="message-status">
+                                                                        <i class="bi bi-check2-all"></i>
+                                                                    </span>
+
+                                                                </div>
                                                             </div>
                                                         </div>
 

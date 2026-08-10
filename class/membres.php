@@ -141,7 +141,7 @@
 
             //$identifiants = array() ;
 
-            $reqListeMessage = $connexionDataBase->prepare("SELECT * FROM (SELECT * FROM messageinbox WHERE (idMembreExpediteur = :idSender AND idMembreDestinataire = :idReceiver) OR (idMembreExpediteur = :idReceiver AND idMembreDestinataire = :idSender) ORDER BY datemessage DESC LIMIT 5 ) AS sous_requete ORDER BY idMessageInbox ASC ") ;
+            $reqListeMessage = $connexionDataBase->prepare("SELECT * FROM (SELECT * FROM messageinbox WHERE (idMembreExpediteur = :idSender AND idMembreDestinataire = :idReceiver) OR (idMembreExpediteur = :idReceiver AND idMembreDestinataire = :idSender) ORDER BY datemessage DESC LIMIT 10 ) AS sous_requete ORDER BY idMessageInbox ASC ") ;
             $reqListeMessage->execute(array(
                 "idSender" => $idSender,
                 "idReceiver" => $idReceiver
