@@ -328,12 +328,18 @@
                         },
                         success : function(response){
                             if(response.status === "success" && response.newMessages.length > 0){
+                                let statutMessage;
                                 //alert("Nouveaux messages reçus");
                                 response.newMessages.forEach(function(itemMsg){
-                                    //console.log("Expediteur " + itemMsg.idMembreExpediteur);
-                                    //alert("Nouveaux messages reçus " + itemMsg.messagetext);
-
-                                        //idLastMessage = itemMsg.idMessageInbox ;
+                                    if(itemMsg.statutMessage === "send"){
+                                        statutMessage = `<i class="bi bi-check2 text-black-50"></i>`;
+                                    }
+                                    else if(itemMsg.statutMessage === "received"){
+                                        statutMessage = `<i class="bi bi-check2-all text-black-50"></i>`;
+                                    }
+                                    else if(itemMsg.statutMessage === "seen"){
+                                        statutMessage = `<i class="bi bi-check2-all text-primary"></i>`;
+                                    }
                                        if(itemMsg.idMembreDestinataire == idReceiver && itemMsg.idMembreExpediteur != idSender){
                                             //console.log(idReceiver);
                                             $("#main-chat").append(`
@@ -483,8 +489,18 @@
                                     },
                                     success : function(response){
                                         if(response.status === "success"){
+                                            let statutMessage;
                                             // Ajoute le message au début de la liste des messages
                                             response.oldMessage.forEach(function(itemMsg){
+                                                if(itemMsg.statutMessage === "send"){
+                                                    statutMessage = `<i class="bi bi-check2 text-black-50"></i>`;
+                                                }
+                                                else if(itemMsg.statutMessage === "received"){
+                                                    statutMessage = `<i class="bi bi-check2-all text-black-50"></i>`;
+                                                }
+                                                else if(itemMsg.statutMessage === "seen"){
+                                                    statutMessage = `<i class="bi bi-check2-all text-primary"></i>`;
+                                                }
 
                                                 if(itemMsg.idMembreDestinataire == idReceiver){
                                                     //console.log(idReceiver);
@@ -492,11 +508,12 @@
                                                         <div class="box-message-right">
                                                             <div class="main-message-right">
                                                                 <p>${itemMsg.messagetext}</p>
+                                                                
                                                                 <div class="statut-message-date">
                                                                     <p>${itemMsg.datemessage}</p>
                                                                     
-                                                                    <span class="message-status">
-                                                                        <i class="bi bi-check2-all"></i>
+                                                                    <span class=" message-status">
+                                                                        ${statutMessage}
                                                                     </span>
 
                                                                 </div>
@@ -512,8 +529,12 @@
                                                         <div class="box-message-left">
                                                             <div class="main-message-left">
                                                                 <p>${itemMsg.messagetext}</p>
-                                                                <p>${itemMsg.datemessage}</p>
-                                                                <p>${itemMsg.idMessageInbox}</p>
+                                                            <div class="statut-message-date">
+                                                                    <p>${itemMsg.datemessage}</p>
+                                                                    
+                                                                
+
+                                                                </div>
 
                                                             </div>
                                                         </div>
