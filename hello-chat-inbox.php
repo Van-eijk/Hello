@@ -1,5 +1,7 @@
 <?php
     session_start();
+   
+
 ?>
 
 <?php
@@ -119,6 +121,7 @@
         </script>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        
 
         <script>
             jQuery(function($){
@@ -581,7 +584,7 @@
 
                         $.ajax({
                             url: 'sendmessage.php',
-                            type: 'POST',
+                            type: 'GET',
                             dataType: 'json',
                             contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                             data: {
@@ -624,12 +627,97 @@
 
 
 
+                   /*************************************** */
+
+
+
+                   function verificationPresenceInbox(idReceiver, idSender){
+
+                        $.ajax({
+                            url: 'verificationpresenceinbox.php',
+                            type: 'GET',
+                            dataType: 'json',
+                            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                            data: {
+                                idSenderAjax: idSender,
+                                idReceiverAjax: idReceiver
+                            },
+                            success : function(response){
+                                if(response.status === "success"){
+                                    //alert(response.message);
+                                    
+
+                                }
+                                
+
+
+
+                                
+                            },
+                            error : function(resultat, statut, erreur){
+                                alert("erreur lors de l'insertion de la présence dans la base de données");
+                            },
+                            complete : function(resultat, statut){
+                                //alert("requette terminée");
+
+                            }
+
+                        });
+
+
+                    }
+
+                    verificationPresenceInbox(idReceiver, idSender);
+
+
+
 
                     
                 }
 
+                // Nous allons retirer le membre de la table inbox lorsque ce dernier sort de la page hello-chat-inbox.php.
+
+                window.addEventListener("pagehide", function () {
+                    //navigator.sendBeacon("/page-fermee.php", "action=depart");
+                    //console.log("Page fermée ou naviguée vers une autre page");
+                    //alert("Page fermée ou naviguée vers une autre page");
+                    $.ajax({
+                            url: 'retirerMembreInbox.php',
+                            type: 'GET',
+                            dataType: 'json',
+                            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                            data: {
+                                idSenderAjax: idSender,
+                                
+                            },
+                            success : function(response){
+                                    
+                                //alert(resultat);
+                                if(response.status === "success"){
+                                    //alert(response.message);
+                                }else{
+                                    alert(response.message);
+                                }
+                                    
+                            
+                            },
+                            error: function(xhr) {
+                                console.log(xhr.responseText); // 🔥 debug réel
+                                alert("Erreur lors de l'envoi du message");
+                            }
+                        
+                        });
+                });
+
             });
+
+           
         </script>
+
+        
+
+
+
         </body>
         </html>
 

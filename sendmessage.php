@@ -3,13 +3,13 @@
     include 'database/configdatabase.php';
     $lienFichierBDD = "database/configdatabase.php";
 
-    if(isset($_POST['idSenderAjax'])){
-        if(isset($_POST['idReceiverAjax'])){
-            if(isset($_POST['contenuMessage'])){
+    if(isset($_GET['idSenderAjax'])){
+        if(isset($_GET['idReceiverAjax'])){
+            if(isset($_GET['contenuMessage'])){
                 $membre = new Membres();
-                $idSender = $_POST['idSenderAjax'] ;
-                $idReceiver = $_POST['idReceiverAjax'] ;
-                $messageText = $_POST['contenuMessage'] ;
+                $idSender = $_GET['idSenderAjax'] ;
+                $idReceiver = $_GET['idReceiverAjax'] ;
+                $messageText = $_GET['contenuMessage'] ;
 
 
                 $sendMessage = $membre->sendMessageInbox($lienFichierBDD, $idSender, $idReceiver, $messageText) ;

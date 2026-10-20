@@ -162,7 +162,7 @@
                             },
                             error: function(xhr) {
                                 console.log(xhr.responseText); // 🔥 debug réel
-                                alert("Erreur avec la communication avec la BD");
+                                alert("Erreur avec la communication avec la BD lors du chargement des discussions récentes");
                             }
                         
                         });
@@ -356,6 +356,11 @@
                             alert("Aucun ID trouvé pour cet élément");
                         }
                     });
+
+
+
+
+                    // Lorsque le membre se 
 
 
                    
