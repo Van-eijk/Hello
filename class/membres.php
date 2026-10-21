@@ -185,12 +185,73 @@
 
         public function sendMessageInbox(string $lienFichierBDD, int $idSender, int $idReceiver, string $messageText){
             include $lienFichierBDD;
+            $statutMessage = "send" ; // Valeur par défaut du statut du message
 
-            $reqSendMessageInbox = $connexionDataBase->prepare('INSERT INTO messageinbox(idMembreExpediteur,idMembreDestinataire,messagetext) VALUES(:idSender,:idReceiver,:messageText)');
+            //Nous allons d'abord définir la valeur de la colonne statutMessage dans la base de données en fonction des données de la table presenceinbox et du statut du membre destinataire.
+
+            // Nous allons d'abord vérifier si le destinataire est présent dans la table presenceinbox
+            $reqVerificationPresenceInbox = $connexionDataBase->prepare("SELECT * FROM presenceinbox WHERE (idMembreExpediteurInbox = :idReceiver) OR (idMembreDestinataireInbox = :idReceiver)") ;
+            $reqVerificationPresenceInbox->execute(array(
+                "idReceiver" => $idReceiver
+            )) ;
+
+            if($reqVerificationPresenceInbox->rowCount() >= 1){
+                $resultatReqVerificationPresenceInbox = $reqVerificationPresenceInbox->fetchAll(PDO::FETCH_ASSOC) ;
+
+                if($resultatReqVerificationPresenceInbox[0]['idMembreExpediteurInbox'] == $idReceiver){
+                    //Si le membre B est present dans la table presenceinbox comme expediteur, on verifie son statut
+                    $reqStatutDestinataire = $connexionDataBase->prepare("SELECT statut FROM membres WHERE idMembre = :idReceiver") ;
+                    $reqStatutDestinataire->execute(array(
+                        "idReceiver" => $idReceiver
+                    )) ;
+                    $resultatReqStatutDestinataire = $reqStatutDestinataire->fetch() ;
+
+                    if($resultatReqStatutDestinataire['statut'] == "en ligne"){
+                        $statutMessage = "seen" ;
+                    }
+                    else{
+                        $statutMessage = "seen" ;
+                    }
+                }
+                else{
+                    //Si le membre B est present dans la table presenceinbox comme destinataire, on verifie son statut
+                    $reqStatutDestinataire = $connexionDataBase->prepare("SELECT statut FROM membres WHERE idMembre = :idReceiver") ;
+                    $reqStatutDestinataire->execute(array(
+                        "idReceiver" => $idReceiver
+                    )) ;
+                    $resultatReqStatutDestinataire = $reqStatutDestinataire->fetch() ;
+
+                    if($resultatReqStatutDestinataire['statut'] == "en ligne"){
+                        $statutMessage = "seen" ;
+                    }
+                    else{
+                        $statutMessage = "seen" ;
+                    }
+                }
+            }
+            else{
+                //Si le membre B n'est pas present dans la table presenceinbox, on verifie son statut
+                $reqStatutDestinataire = $connexionDataBase->prepare("SELECT statut FROM membres WHERE idMembre = :idReceiver") ;
+                $reqStatutDestinataire->execute(array(
+                    "idReceiver" => $idReceiver
+                )) ;
+                $resultatReqStatutDestinataire = $reqStatutDestinataire->fetch() ;
+
+                if($resultatReqStatutDestinataire['statut'] == "en ligne"){
+                    $statutMessage = "received" ;
+                }
+                else{
+                    $statutMessage = "send" ;
+                }
+            }
+            // Maintenant, nous allons insérer le message dans la table messageinbox avec le statutMessage approprié
+
+            $reqSendMessageInbox = $connexionDataBase->prepare('INSERT INTO messageinbox(idMembreExpediteur,idMembreDestinataire,messagetext,statutMessage) VALUES(:idSender,:idReceiver,:messageText,:statutMessage)');
             $reqSendMessageInbox->execute(array(
                 "idSender" => $idSender,
                 "idReceiver" => $idReceiver,
-                "messageText" => $messageText
+                "messageText" => $messageText,
+                "statutMessage" => $statutMessage
             ));
 
             if($reqSendMessageInbox->rowCount() >= 1){
